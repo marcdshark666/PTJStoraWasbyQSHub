@@ -679,7 +679,7 @@
         title: "Nyupptäckt diabetes",
         icon: "activity",
         source: "Diabetes Ssk - nyupptäckt.26.docx",
-        keywords: ["diabetes", "blodsocker", "hba1c", "fotstatus", "ögon", "nyupptäckt"],
+        keywords: ["diabetes", "blodsocker", "hba1c", "fotstatus", "ögon", "nyupptäckt", "levnadsvanor", "komplikation", "uppföljning", "prover", "bmi", "midjemått"],
         summary: "Notebook-utdraget beskriver en strukturerad sjuksköterskerutin där diagnosen förklaras, levnadsvanor gås igenom och status/prover samlas inför fortsatt läkaruppföljning.",
         bullets: [
           "Gå igenom diagnos, egenvård och varför uppföljning behövs.",
@@ -692,7 +692,7 @@
         title: "Triage till fysioterapeut",
         icon: "route",
         source: "Triagering Vem ska till fysioterapeut.docx",
-        keywords: ["fysio", "fysioterapeut", "triage", "led", "muskel", "lumbago", "nacke", "axel", "huvudvärk"],
+        keywords: ["fysio", "fysioterapeut", "triage", "led", "muskel", "lumbago", "nacke", "axel", "huvudvärk", "stukning", "knä", "höft", "rygg", "stress", "fysisk aktivitet", "smärta"],
         summary: "Parafrasen från Notebook-utdraget säger att fysioterapeutspåret passar vid flera besvär från leder, muskler, rygg, nacke och stress-/aktivitetsrelaterade problem när patienten inte är allmänpåverkad.",
         bullets: [
           "Skicka inte vidare som rutin om patienten verkar sjuk eller tydligt allmänpåverkad.",
@@ -705,7 +705,7 @@
         title: "Astma/KOL årskontroll",
         icon: "lungs",
         source: "Årskontroll AstmaKOL Sköterska förberedande - kopia.docx",
-        keywords: ["astma", "kol", "spirometri", "pef", "act", "cat", "mmrc", "inhalation", "luftvägsregistret"],
+        keywords: ["astma", "kol", "spirometri", "pef", "act", "cat", "mmrc", "inhalation", "luftvägsregistret", "saturation", "andning", "hosta", "årskontroll", "inhalationsteknik"],
         summary: "Notebook-utdraget beskriver förberedelser inför årskontroll: rätt journalmall, samtycke när register används, relevanta mätningar och skattningar samt kontroll av inhalationsteknik.",
         bullets: [
           "Samla aktuella mätvärden och symtomskattningar före läkarbesöket.",
@@ -718,7 +718,7 @@
         title: "Hemsjukvård",
         icon: "home",
         source: "Information HSV.docx / HSV Rutin för samverkan.26.docx",
-        keywords: ["hemsjuk", "hsv", "jour", "samverkan", "hemmet", "ansvar"],
+        keywords: ["hemsjuk", "hsv", "jour", "samverkan", "hemmet", "ansvar", "överlämning", "kväll", "natt", "helg", "kontaktväg", "vardag"],
         summary: "Det lokala utdraget beskriver ansvarsfördelning mellan vårdcentralen och jouraktör över dygnet, med fokus på tydlig överlämning och rätt kontaktväg.",
         bullets: [
           "Kontrollera alltid aktuell ansvarstid och jourväg i originalkällan.",
@@ -731,7 +731,7 @@
         title: "Barn-UVI",
         icon: "clipboard",
         source: "Barn-UVI-källa i Notebook",
-        keywords: ["barn", "uvi", "urinvägsinfektion", "urinprov"],
+        keywords: ["barn", "uvi", "urinvägsinfektion", "urinprov", "feber", "sveda", "urin", "odling", "infektion"],
         summary: "Notebook-materialet nämner Barn-UVI som område, men det publika utdraget här innehåller inte tillräckligt med detaljer för ett säkert rutinsvar.",
         bullets: [
           "Kontrollera originalkällan i den interna kunskapsytan innan råd ges.",
@@ -743,7 +743,7 @@
         title: "LESS / triagering",
         icon: "checklist",
         source: "LESS-/triageringskälla i Notebook",
-        keywords: ["less", "triagering", "telefon", "bedömning", "rådgivning"],
+        keywords: ["less", "triagering", "telefon", "bedömning", "rådgivning", "sökorsak", "bokning", "kontakt", "prioritering"],
         summary: "Notebook-materialet nämner LESS och triagering, men den här publika demoversionen saknar ett komplett utdrag från källfilen.",
         bullets: [
           "Använd Notebooken för den fullständiga lokala rutinen.",
@@ -781,24 +781,49 @@
     function scoreTopic(query, topic) {
       const normalizedQuery = normalizeText(query);
       const haystack = normalizeText([topic.title, topic.summary, topic.keywords.join(" ")].join(" "));
+      const queryWords = normalizedQuery.split(" ").filter((word) => word.length >= 3);
+      const keywordWords = topic.keywords.map((keyword) => normalizeText(keyword));
       let score = 0;
 
-      for (const word of normalizedQuery.split(" ")) {
-        if (!word || word.length < 3) continue;
-        if (haystack.includes(word)) score += topic.keywords.includes(word) ? 4 : 2;
+      for (const word of queryWords) {
+        if (keywordWords.some((keyword) => keyword === word)) {
+          score += 8;
+        } else if (keywordWords.some((keyword) => keyword.length >= 5 && (word.startsWith(keyword) || keyword.startsWith(word)))) {
+          score += 5;
+        } else if (haystack.includes(word)) {
+          score += 2;
+        }
       }
 
-      for (const keyword of topic.keywords) {
-        if (normalizedQuery.includes(normalizeText(keyword))) score += 6;
+      for (const keyword of keywordWords) {
+        if (keyword.includes(" ") && normalizedQuery.includes(keyword)) score += 8;
       }
 
       return score;
     }
 
-    function findBestTopic(query) {
+    function findTopicMatches(query) {
       return topics
         .map((topic) => ({ topic, score: scoreTopic(query, topic) }))
-        .sort((a, b) => b.score - a.score)[0];
+        .filter((match) => match.score > 0)
+        .sort((a, b) => b.score - a.score);
+    }
+
+    function findBestTopic(query) {
+      return findTopicMatches(query)[0];
+    }
+
+    function getMatchedTerms(query, topic) {
+      const queryWords = normalizeText(query).split(" ").filter((word) => word.length >= 3);
+      return topic.keywords
+        .filter((keyword) => {
+          const normalizedKeyword = normalizeText(keyword);
+          if (normalizedKeyword.includes(" ")) {
+            return normalizeText(query).includes(normalizedKeyword);
+          }
+          return queryWords.some((word) => normalizedKeyword === word || (normalizedKeyword.length >= 5 && (word.startsWith(normalizedKeyword) || normalizedKeyword.startsWith(word))));
+        })
+        .slice(0, 5);
     }
 
     function escapeHtml(value) {
@@ -843,10 +868,26 @@
       };
     }
 
+    function formatNearbyAnswer(query, matches) {
+      const topMatches = matches.slice(0, 3);
+      const cards = topMatches.map(({ topic, score }) => {
+        const matchedTerms = getMatchedTerms(query, topic);
+        const termText = matchedTerms.length
+          ? ` Matchande ord: ${escapeHtml(matchedTerms.join(", "))}.`
+          : "";
+        return `<li><strong>${escapeHtml(topic.title)}</strong> från <em>${escapeHtml(topic.source)}</em>. ${escapeHtml(topic.summary)}${termText} Träffstyrka: ${score}.</li>`;
+      }).join("");
+
+      return {
+        html: `<h3>Jag hittade inget exakt svar, men detta verkar närliggande</h3><p>Jag hittar ingen exakt rutin för "${escapeHtml(query)}" i den lokala parafrasyta som är tillgänglig här, men jag hittade snarlikt material i källfilerna:</p><ul>${cards}</ul><p>Menar du något av dessa områden? Svara gärna till exempel "ja, fysioterapi" eller beskriv med fler ord, så hjälper jag dig ringa in rätt källa.</p>`,
+        meta: `Snarlika träffar från ${topMatches.length} källa/källor`
+      };
+    }
+
     function formatNoAnswer(query) {
       return {
-        html: `<h3>Ingen säker träff</h3><p>Jag hittar ingen säker matchning för "${escapeHtml(query)}" i det material som är tillgängligt från den här sidan just nu. För att undvika påhittade rutiner svarar jag inte med detaljer när källunderlaget saknas i den inlästa ytan.</p><ul><li>Formulera gärna frågan med fler ord från rutinen.</li><li>När en privat Notebook-bridge är ansluten kan samma chatt hämta bredare parafraser direkt från källfilerna.</li></ul>`,
-        meta: "Ingen matchning i lokal kunskapsyta"
+        html: `<h3>Jag behöver lite mer riktning</h3><p>Jag hittar varken en exakt eller tydligt snarlik träff för "${escapeHtml(query)}" i den lokala parafrasyta som finns här just nu. Jag vill inte hitta på en rutin.</p><ul><li>Beskriv gärna sökorsaken, diagnosen eller vilket arbetsflöde du menar.</li><li>Exempel på områden jag kan guida kring är diabetes, astma/KOL, fysioterapi-triage, hemsjukvård, Barn-UVI och LESS/triagering.</li><li>När den privata live-bridgen är ansluten kan jag söka bredare i Notebook-källorna och fortfarande visa vilken fil svaret bygger på.</li></ul>`,
+        meta: "Behöver mer information för att hitta rätt källa"
       };
     }
 
@@ -880,9 +921,13 @@
     }
 
     function askLocalKnowledge(query) {
-      const match = findBestTopic(query);
-      if (match && match.score >= 4) {
+      const matches = findTopicMatches(query);
+      const match = matches[0];
+      if (match && match.score >= 6) {
         return formatTopicAnswer(match.topic, match.score);
+      }
+      if (matches.length) {
+        return formatNearbyAnswer(query, matches);
       }
       return formatNoAnswer(query);
     }

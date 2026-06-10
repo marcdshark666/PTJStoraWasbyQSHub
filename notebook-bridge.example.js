@@ -46,7 +46,10 @@ function askNotebook(question) {
     "Svara på svenska.",
     "Använd endast källorna i notebooken.",
     "Parafrasera svaret. Citera inte längre stycken ordagrant.",
-    "Om källorna inte räcker, säg tydligt att underlaget saknas.",
+    "Ange alltid vilken fil eller källa i notebooken svaret bygger på när det går.",
+    "Om du inte hittar en exakt träff ska du leta efter närliggande eller snarlikt material i källorna.",
+    "När svaret bara är snarlikt ska du säga det tydligt, parafrasera det närliggande materialet, ange fil/källa och fråga användaren om det var detta de sökte.",
+    "Om källorna inte räcker alls, säg tydligt att underlaget saknas och ställ en kort följdfråga som hjälper användaren ringa in rätt rutin.",
     "",
     `Fråga: ${question}`
   ].join("\n");

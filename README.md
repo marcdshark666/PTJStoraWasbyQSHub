@@ -11,6 +11,7 @@ Important:
 - The repository is public, so the app does not include private NotebookLM credentials, staff names, patient data, or full internal routines.
 - The frontend has no direct link to the notebook.
 - The built-in fallback answers are short paraphrases from the limited Notebook material supplied in the conversation.
+- When there is no exact match, the chat suggests nearby source files and asks a follow-up question instead of stopping at "not found".
 - A live NotebookLM integration should be done through a private backend that authenticates server-side and returns paraphrased answers to the static frontend.
 
 ## Private Notebook bridge
