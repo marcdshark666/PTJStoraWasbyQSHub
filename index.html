@@ -58,7 +58,7 @@
       z-index: 20;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       gap: 18px;
       padding: 16px clamp(18px, 4vw, 54px);
       background: rgba(255, 253, 250, 0.92);
@@ -105,14 +105,6 @@
       font-weight: 650;
     }
 
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex: 0 0 auto;
-    }
-
-    .link-button,
     .icon-button,
     .primary-button {
       display: inline-flex;
@@ -127,16 +119,6 @@
       transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
     }
 
-    .link-button {
-      padding: 0 14px;
-      background: #ffffff;
-      border-color: var(--line);
-      color: var(--ptj-blue-dark);
-      font-size: 14px;
-      font-weight: 750;
-    }
-
-    .link-button:hover,
     .icon-button:hover,
     .primary-button:hover {
       transform: translateY(-1px);
@@ -269,7 +251,6 @@
     }
 
     .primary-button svg,
-    .link-button svg,
     .icon-button svg {
       width: 18px;
       height: 18px;
@@ -297,6 +278,93 @@
     .prompt-chip:hover {
       background: #ffffff;
       border-color: rgba(7, 84, 107, 0.36);
+    }
+
+    .chat-log {
+      display: grid;
+      gap: 14px;
+      max-height: 430px;
+      overflow: auto;
+      padding: 4px 2px 2px;
+      scroll-behavior: smooth;
+    }
+
+    .chat-log[hidden] {
+      display: none;
+    }
+
+    .chat-message {
+      display: grid;
+      gap: 8px;
+      max-width: 92%;
+    }
+
+    .chat-message.user {
+      justify-self: end;
+    }
+
+    .chat-message.assistant {
+      justify-self: start;
+    }
+
+    .message-bubble {
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      line-height: 1.55;
+      font-size: 14px;
+      box-shadow: 0 10px 24px rgba(66, 48, 18, 0.07);
+    }
+
+    .chat-message.user .message-bubble {
+      background: var(--ptj-blue-dark);
+      color: white;
+      border-top-right-radius: 3px;
+    }
+
+    .chat-message.assistant .message-bubble {
+      background: rgba(255, 255, 255, 0.88);
+      color: #344348;
+      border: 1px solid rgba(7, 84, 107, 0.18);
+      border-left: 5px solid var(--ptj-red);
+      border-top-left-radius: 3px;
+    }
+
+    .message-bubble h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      color: var(--ink);
+    }
+
+    .message-bubble p {
+      margin: 0;
+    }
+
+    .message-bubble ul {
+      display: grid;
+      gap: 7px;
+      margin: 10px 0 0;
+      padding-left: 18px;
+    }
+
+    .message-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .status-line {
+      min-height: 20px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .status-line[data-state="loading"] {
+      color: var(--ptj-blue-dark);
+      font-weight: 750;
     }
 
     .answer-card {
@@ -458,39 +526,6 @@
       font-weight: 800;
     }
 
-    .notice-band {
-      padding: clamp(26px, 5vw, 52px) clamp(18px, 5vw, 72px);
-      background: #16333d;
-      color: white;
-    }
-
-    .notice-inner {
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 22px;
-      align-items: center;
-    }
-
-    .notice-inner h2 {
-      margin: 0;
-      font-size: clamp(24px, 3vw, 34px);
-      line-height: 1.1;
-    }
-
-    .notice-inner p {
-      max-width: 760px;
-      margin: 10px 0 0;
-      color: rgba(255, 255, 255, 0.78);
-      line-height: 1.55;
-    }
-
-    .notice-inner .link-button {
-      background: #ffffff;
-      border: 0;
-    }
-
     footer {
       display: flex;
       justify-content: space-between;
@@ -536,19 +571,6 @@
         display: none;
       }
 
-      .top-actions {
-        align-self: center;
-      }
-
-      .top-actions .link-button span {
-        display: none;
-      }
-
-      .link-button {
-        width: 42px;
-        padding: 0;
-      }
-
       .hero {
         min-height: auto;
       }
@@ -568,7 +590,6 @@
       }
 
       .section-head,
-      .notice-inner,
       footer {
         display: grid;
       }
@@ -589,12 +610,6 @@
           <span>Praktikertjänst QS Hub</span>
         </span>
       </a>
-      <nav class="top-actions" aria-label="Snabblänkar">
-        <a class="link-button" href="https://notebooklm.google.com/notebook/4b4902ea-8e75-4093-a1fb-c8e92cf8fd1a?utm_source=nlmm_share" target="_blank" rel="noreferrer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3h7v7"/><path d="M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
-          <span>Notebook</span>
-        </a>
-      </nav>
     </header>
 
     <main id="top">
@@ -602,14 +617,14 @@
         <div class="hero-media" role="img" aria-label="Stora Wäsby slott med gul fasad och fontän">
           <div class="hero-copy">
             <h1>Stora Wäsby Vårdcentral</h1>
-            <p>En lugn, ljus kunskapsportal för snabba frågor mot vår lokala Notebook-källa.</p>
+            <p>En lugn, ljus kunskapsportal för snabba frågor mot vår lokala kunskapskälla.</p>
           </div>
         </div>
 
         <aside class="ask-panel" aria-label="Ställ fråga">
           <div class="panel-title">
-            <h2>Fråga Notebook-hubben</h2>
-            <p>Svaren är korta parafraser från de Notebook-områden som finns i det lokala utdraget. För originaltext och fullständig rutin öppnas notebooken.</p>
+            <h2>Prata med QS-hubben</h2>
+            <p>Ställ en fråga i fritext. Svaret visas direkt här som en parafras från källmaterialet när en matchning finns.</p>
           </div>
 
           <form class="question-form" id="questionForm">
@@ -619,7 +634,7 @@
             </label>
             <button class="primary-button" type="submit">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-              Sök parafras
+              Skicka fråga
             </button>
           </form>
 
@@ -630,55 +645,33 @@
             <button class="prompt-chip" type="button" data-question="Hemsjukvård ansvar">Hemsjukvård</button>
           </div>
 
-          <article class="answer-card" id="answerCard" hidden aria-live="polite">
-            <div class="answer-kicker">
-              <span id="answerMode">Notebook-parafras</span>
-              <span id="confidenceLabel">Matchning</span>
-            </div>
-            <h3 id="answerTitle"></h3>
-            <p id="answerSummary"></p>
-            <ul id="answerBullets"></ul>
-            <div class="source-row">
-              <span id="answerSource"></span>
-              <a id="answerNotebookLink" href="https://notebooklm.google.com/notebook/4b4902ea-8e75-4093-a1fb-c8e92cf8fd1a?utm_source=nlmm_share" target="_blank" rel="noreferrer">Öppna Notebook</a>
-            </div>
-          </article>
+          <div class="status-line" id="statusLine" aria-live="polite"></div>
+          <section class="chat-log" id="chatLog" hidden aria-live="polite" aria-label="Svar från QS-hubben"></section>
         </aside>
       </section>
 
       <section class="content-band" aria-labelledby="topicsTitle">
         <div class="band-inner">
           <div class="section-head">
-            <h2 id="topicsTitle">Områden som finns i det lokala Notebook-utdraget</h2>
-            <p>Portalen svarar bara när frågan matchar ett känt område. Det håller den smal, tydlig och mindre riskabel i ett publikt repo.</p>
+            <h2 id="topicsTitle">Områden som är förberedda i kunskapsytan</h2>
+            <p>Frågor som matchar ett förberett område får ett direkt parafraserat svar i chatten. Mer detaljerad livehämtning kräver en privat backend.</p>
           </div>
 
           <div class="topic-grid" id="topicGrid"></div>
         </div>
       </section>
 
-      <section class="notice-band" aria-labelledby="notebookTitle">
-        <div class="notice-inner">
-          <div>
-            <h2 id="notebookTitle">Notebooken är källan, men klienten är offentlig</h2>
-            <p>En publik GitHub Pages-sida kan inte säkert logga in i Google NotebookLM åt användaren. För live-svar behövs en privat serverdel som autentiserar mot NotebookLM och skickar tillbaka parafraserade svar utan att exponera källfiler eller tokens.</p>
-          </div>
-          <a class="link-button" href="https://notebooklm.google.com/notebook/4b4902ea-8e75-4093-a1fb-c8e92cf8fd1a?utm_source=nlmm_share" target="_blank" rel="noreferrer">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3h7v7"/><path d="M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
-            <span>Öppna Notebook</span>
-          </a>
-        </div>
-      </section>
     </main>
 
     <footer>
       <span>© 2026 Stora Wäsby Vårdcentral / Praktikertjänst. Demo för QS Hub.</span>
-      <span>Bild: Stora Väsby slott, Wikimedia Commons. Inga NotebookLM-hemligheter lagras i klienten.</span>
+      <span>Bild: Stora Väsby slott, Wikimedia Commons. Inga källhemligheter lagras i klienten.</span>
     </footer>
   </div>
 
   <script>
-    const NOTEBOOK_URL = "https://notebooklm.google.com/notebook/4b4902ea-8e75-4093-a1fb-c8e92cf8fd1a?utm_source=nlmm_share";
+    const NOTEBOOK_ID = "4b4902ea-8e75-4093-a1fb-c8e92cf8fd1a";
+    const NOTEBOOK_BRIDGE_ENDPOINT = window.PTJ_NOTEBOOK_ENDPOINT || "/api/notebook";
 
     const topics = [
       {
@@ -741,7 +734,7 @@
         keywords: ["barn", "uvi", "urinvägsinfektion", "urinprov"],
         summary: "Notebook-materialet nämner Barn-UVI som område, men det publika utdraget här innehåller inte tillräckligt med detaljer för ett säkert rutinsvar.",
         bullets: [
-          "Öppna Notebooken och kontrollera originalkällan innan råd ges.",
+          "Kontrollera originalkällan i den interna kunskapsytan innan råd ges.",
           "Sidan hittar ämnet men undviker att fylla i kliniska detaljer som inte finns i utdraget."
         ]
       },
@@ -771,12 +764,9 @@
     const topicGrid = document.querySelector("#topicGrid");
     const questionForm = document.querySelector("#questionForm");
     const questionInput = document.querySelector("#questionInput");
-    const answerCard = document.querySelector("#answerCard");
-    const answerTitle = document.querySelector("#answerTitle");
-    const answerSummary = document.querySelector("#answerSummary");
-    const answerBullets = document.querySelector("#answerBullets");
-    const answerSource = document.querySelector("#answerSource");
-    const confidenceLabel = document.querySelector("#confidenceLabel");
+    const chatLog = document.querySelector("#chatLog");
+    const statusLine = document.querySelector("#statusLine");
+    const conversation = [];
 
     function normalizeText(value) {
       return value
@@ -811,42 +801,120 @@
         .sort((a, b) => b.score - a.score)[0];
     }
 
-    function renderAnswer(topic, score) {
-      answerTitle.textContent = topic.title;
-      answerSummary.textContent = topic.summary;
-      answerBullets.innerHTML = topic.bullets.map((item) => `<li>${item}</li>`).join("");
-      answerSource.textContent = `Källa: ${topic.source}`;
-      confidenceLabel.textContent = score >= 12 ? "Stark matchning" : "Möjlig matchning";
-      answerCard.hidden = false;
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
-    function renderNoAnswer(query) {
-      answerTitle.textContent = "Ingen säker träff i det publika utdraget";
-      answerSummary.textContent = `Frågan "${query}" matchar inte något område som finns inläst i den här öppna demoappen. För att undvika påhittade rutiner behöver originalkällan kontrolleras i Notebooken.`;
-      answerBullets.innerHTML = [
-        "Öppna Notebook-länken och sök i originalfilerna.",
-        "Lägg till en privat backend om sidan ska kunna fråga NotebookLM live.",
-        "Publicera inte interna rutiner eller personuppgifter direkt i ett publikt repo."
-      ].map((item) => `<li>${item}</li>`).join("");
-      answerSource.textContent = "Källa: NotebookLM-länk angiven, men inget matchande lokalt utdrag.";
-      confidenceLabel.textContent = "Ingen matchning";
-      answerCard.hidden = false;
+    function setStatus(text, state = "") {
+      statusLine.textContent = text;
+      statusLine.dataset.state = state;
     }
 
-    function askQuestion(query) {
+    function appendMessage(role, content, meta = "") {
+      chatLog.hidden = false;
+      const article = document.createElement("article");
+      article.className = `chat-message ${role}`;
+      const bubble = document.createElement("div");
+      bubble.className = "message-bubble";
+      bubble.innerHTML = content;
+      article.appendChild(bubble);
+
+      if (meta) {
+        const metaRow = document.createElement("div");
+        metaRow.className = "message-meta";
+        metaRow.textContent = meta;
+        article.appendChild(metaRow);
+      }
+
+      chatLog.appendChild(article);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    function formatTopicAnswer(topic, score) {
+      const bulletHtml = topic.bullets.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+      return {
+        html: `<h3>${escapeHtml(topic.title)}</h3><p>${escapeHtml(topic.summary)}</p><ul>${bulletHtml}</ul>`,
+        meta: `${score >= 12 ? "Stark matchning" : "Möjlig matchning"} · Källa: ${topic.source}`
+      };
+    }
+
+    function formatNoAnswer(query) {
+      return {
+        html: `<h3>Ingen säker träff</h3><p>Jag hittar ingen säker matchning för "${escapeHtml(query)}" i det material som är tillgängligt från den här sidan just nu. För att undvika påhittade rutiner svarar jag inte med detaljer när källunderlaget saknas i den inlästa ytan.</p><ul><li>Formulera gärna frågan med fler ord från rutinen.</li><li>När en privat Notebook-bridge är ansluten kan samma chatt hämta bredare parafraser direkt från källfilerna.</li></ul>`,
+        meta: "Ingen matchning i lokal kunskapsyta"
+      };
+    }
+
+    async function askBridge(question) {
+      if (!NOTEBOOK_BRIDGE_ENDPOINT) return null;
+
+      const response = await fetch(NOTEBOOK_BRIDGE_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          notebookId: NOTEBOOK_ID,
+          question,
+          mode: "paraphrase-only",
+          conversation: conversation.slice(-8)
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Notebook-bridge svarade med ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data || !data.answer) {
+        throw new Error("Notebook-bridge saknade svarstext.");
+      }
+
+      return {
+        html: `<p>${escapeHtml(data.answer).replace(/\n/g, "<br>")}</p>`,
+        meta: data.source ? `Parafras från källmaterial · ${data.source}` : "Parafras från källmaterial"
+      };
+    }
+
+    function askLocalKnowledge(query) {
+      const match = findBestTopic(query);
+      if (match && match.score >= 4) {
+        return formatTopicAnswer(match.topic, match.score);
+      }
+      return formatNoAnswer(query);
+    }
+
+    async function askQuestion(query) {
       const cleanQuery = query.trim();
       if (!cleanQuery) {
         questionInput.focus();
         return;
       }
 
-      const match = findBestTopic(cleanQuery);
-      if (match && match.score >= 4) {
-        renderAnswer(match.topic, match.score);
-      } else {
-        renderNoAnswer(cleanQuery);
+      conversation.push({ role: "user", content: cleanQuery });
+      appendMessage("user", `<p>${escapeHtml(cleanQuery)}</p>`);
+      questionInput.value = "";
+      questionInput.disabled = true;
+      setStatus("Hämtar och parafraserar svar...", "loading");
+
+      try {
+        const bridgeAnswer = await askBridge(cleanQuery);
+        const answer = bridgeAnswer || askLocalKnowledge(cleanQuery);
+        appendMessage("assistant", answer.html, answer.meta);
+        conversation.push({ role: "assistant", content: answer.html.replace(/<[^>]*>/g, " ") });
+        setStatus(bridgeAnswer ? "Svar hämtat via privat kunskapsbridge." : "Svarat från lokal parafrasyta.");
+      } catch (error) {
+        const answer = askLocalKnowledge(cleanQuery);
+        appendMessage("assistant", answer.html, `${answer.meta} · Livekoppling misslyckades`);
+        conversation.push({ role: "assistant", content: answer.html.replace(/<[^>]*>/g, " ") });
+        setStatus("Livekopplingen svarade inte, så jag använde lokal parafrasyta.");
+      } finally {
+        questionInput.disabled = false;
+        questionInput.focus();
       }
-      answerCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
 
     function renderTopics() {
