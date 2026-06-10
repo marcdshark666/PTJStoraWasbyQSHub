@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Stora Wäsby Vårdcentral kunskapsportal med NotebookLM-källa.">
+  <title>Stora Wäsby Vårdcentral | Notebook QS Hub</title>
+  <style>
+    :root {
+      --ptj-blue: #007f9f;
+      --ptj-blue-dark: #07546b;
+      --ptj-red: #c73343;
+      --wasby-yellow: #f5d36f;
+      --wasby-wall: #fff6dc;
+      --paper: #fffdfa;
+      --ink: #1d2a2f;
+      --muted: #65767d;
+      --line: rgba(29, 42, 47, 0.14);
+      --shadow: 0 24px 70px rgba(66, 48, 18, 0.16);
+      --radius: 8px;
+      color-scheme: light;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, rgba(255, 248, 226, 0.88), rgba(252, 241, 202, 0.92)),
+        #f7e6a9;
+      color: var(--ink);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .site-shell {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 16px clamp(18px, 4vw, 54px);
+      background: rgba(255, 253, 250, 0.92);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      font-weight: 800;
+      letter-spacing: 0;
+      color: var(--ptj-blue-dark);
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: var(--ptj-blue);
+      color: white;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(0, 127, 159, 0.2);
+      flex: 0 0 auto;
+    }
+
+    .brand-text {
+      display: grid;
+      gap: 2px;
+      line-height: 1.1;
+    }
+
+    .brand-text strong {
+      font-size: 17px;
+    }
+
+    .brand-text span {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .link-button,
+    .icon-button,
+    .primary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .link-button {
+      padding: 0 14px;
+      background: #ffffff;
+      border-color: var(--line);
+      color: var(--ptj-blue-dark);
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .link-button:hover,
+    .icon-button:hover,
+    .primary-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 520px);
+      min-height: calc(100vh - 74px);
+      border-bottom: 1px solid rgba(29, 42, 47, 0.1);
+    }
+
+    .hero-media {
+      position: relative;
+      min-height: 520px;
+      background:
+        linear-gradient(90deg, rgba(20, 28, 30, 0.36), rgba(20, 28, 30, 0.06)),
+        url("https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Stora_V%C3%A4sby_slott.jpg/1280px-Stora_V%C3%A4sby_slott.jpg") center / cover;
+      isolation: isolate;
+    }
+
+    .hero-media::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 42%;
+      background: linear-gradient(0deg, rgba(29, 42, 47, 0.62), rgba(29, 42, 47, 0));
+      z-index: -1;
+    }
+
+    .hero-copy {
+      position: absolute;
+      left: clamp(24px, 6vw, 72px);
+      right: clamp(24px, 7vw, 86px);
+      bottom: clamp(28px, 8vh, 78px);
+      max-width: 740px;
+      color: white;
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.26);
+    }
+
+    .hero-copy h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(44px, 6vw, 82px);
+      line-height: 0.96;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .hero-copy p {
+      max-width: 580px;
+      margin: 18px 0 0;
+      font-size: clamp(17px, 1.6vw, 22px);
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .ask-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 22px;
+      padding: clamp(24px, 5vw, 58px);
+      background:
+        radial-gradient(circle at 95% 12%, rgba(0, 127, 159, 0.13), transparent 32%),
+        linear-gradient(180deg, #fffefa, #fff3cc);
+    }
+
+    .panel-title {
+      display: grid;
+      gap: 10px;
+    }
+
+    .panel-title h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1;
+      letter-spacing: 0;
+      color: var(--ptj-blue-dark);
+    }
+
+    .panel-title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .question-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .input-wrap {
+      display: grid;
+      gap: 8px;
+    }
+
+    .input-label {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--ptj-blue-dark);
+    }
+
+    .question-input {
+      width: 100%;
+      min-height: 58px;
+      padding: 0 18px;
+      border: 1px solid rgba(7, 84, 107, 0.26);
+      border-radius: var(--radius);
+      background: #ffffff;
+      color: var(--ink);
+      outline: none;
+      box-shadow: 0 12px 24px rgba(66, 48, 18, 0.07);
+    }
+
+    .question-input:focus {
+      border-color: var(--ptj-blue);
+      box-shadow: 0 0 0 4px rgba(0, 127, 159, 0.14);
+    }
+
+    .primary-button {
+      width: 100%;
+      min-height: 56px;
+      padding: 0 18px;
+      background: var(--ptj-blue-dark);
+      color: white;
+      font-weight: 850;
+      font-size: 15px;
+    }
+
+    .primary-button svg,
+    .link-button svg,
+    .icon-button svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
+    .quick-prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .prompt-chip {
+      min-height: 36px;
+      padding: 0 12px;
+      border: 1px solid rgba(7, 84, 107, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--ptj-blue-dark);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .prompt-chip:hover {
+      background: #ffffff;
+      border-color: rgba(7, 84, 107, 0.36);
+    }
+
+    .answer-card {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid rgba(7, 84, 107, 0.18);
+      border-left: 5px solid var(--ptj-red);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: var(--shadow);
+    }
+
+    .answer-card[hidden] {
+      display: none;
+    }
+
+    .answer-kicker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ptj-blue-dark);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .answer-card h3 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--ink);
+    }
+
+    .answer-card p {
+      margin: 0;
+      color: #344348;
+      line-height: 1.58;
+    }
+
+    .answer-card ul {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding-left: 20px;
+      color: #344348;
+      line-height: 1.5;
+    }
+
+    .source-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .source-row a {
+      color: var(--ptj-blue-dark);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .content-band {
+      padding: clamp(42px, 7vw, 86px) clamp(18px, 5vw, 72px);
+      background: var(--paper);
+    }
+
+    .band-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 24px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 20px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      max-width: 720px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.05;
+      color: var(--ptj-blue-dark);
+    }
+
+    .section-head p {
+      margin: 0;
+      max-width: 360px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .topic-card {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      min-height: 210px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      box-shadow: 0 16px 36px rgba(66, 48, 18, 0.08);
+    }
+
+    .topic-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: rgba(0, 127, 159, 0.1);
+      color: var(--ptj-blue-dark);
+    }
+
+    .topic-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .topic-card h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .topic-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .topic-card button {
+      justify-self: start;
+      min-height: 36px;
+      margin-top: auto;
+      padding: 0 12px;
+      border: 1px solid rgba(7, 84, 107, 0.2);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--ptj-blue-dark);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .notice-band {
+      padding: clamp(26px, 5vw, 52px) clamp(18px, 5vw, 72px);
+      background: #16333d;
+      color: white;
+    }
+
+    .notice-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 22px;
+      align-items: center;
+    }
+
+    .notice-inner h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.1;
+    }
+
+    .notice-inner p {
+      max-width: 760px;
+      margin: 10px 0 0;
+      color: rgba(255, 255, 255, 0.78);
+      line-height: 1.55;
+    }
+
+    .notice-inner .link-button {
+      background: #ffffff;
+      border: 0;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px clamp(18px, 5vw, 72px);
+      background: #10242b;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-media {
+        min-height: 430px;
+      }
+
+      .ask-panel {
+        justify-content: start;
+      }
+
+      .topic-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 680px) {
+      .topbar {
+        position: relative;
+        align-items: flex-start;
+        padding: 14px 16px;
+      }
+
+      .brand-text span {
+        display: none;
+      }
+
+      .top-actions {
+        align-self: center;
+      }
+
+      .top-actions .link-button span {
+        display: none;
+      }
+
+      .link-button {
+        width: 42px;
+        padding: 0;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero-media {
+        min-height: 360px;
+      }
+
+      .hero-copy {
+        left: 18px;
+        right: 18px;
+        bottom: 24px;
+      }
+
+      .hero-copy h1 {
+        font-size: 42px;
+      }
+
+      .section-head,
+      .notice-inner,
+      footer {
+        display: grid;
+      }
+
+      .topic-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar" aria-label="Sidhuvud">
+      <a class="brand" href="#top" aria-label="Stora Wäsby Vårdcentral startsida">
+        <span class="brand-mark" aria-hidden="true">PTJ</span>
+        <span class="brand-text">
+          <strong>Stora Wäsby Vårdcentral</strong>
+          <span>Praktikertjänst QS Hub</span>
+        </span>
+      </a>
+      <nav class="top-actions" aria-label="Snabblänkar">
+        <a class="link-button" href="https://notebooklm.google.com/notebook/4b4902ea-8e75-4093-a1fb-c8e92cf8fd1a?utm_source=nlmm_share" target="_blank" rel="noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3h7v7"/><path d="M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+          <span>Notebook</span>
+        </a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-label="Frågeportal">
+        <div class="hero-media" role="img" aria-label="Stora Wäsby slott med gul fasad och fontän">
+          <div class="hero-copy">
+            <h1>Stora Wäsby Vårdcentral</h1>
+            <p>En lugn, ljus kunskapsportal för snabba frågor mot vår lokala Notebook-källa.</p>
+          </div>
+        </div>
+
+        <aside class="ask-panel" aria-label="Ställ fråga">
+          <div class="panel-title">
+            <h2>Fråga Notebook-hubben</h2>
+            <p>Svaren är korta parafraser från de Notebook-områden som finns i det lokala utdraget. För originaltext och fullständig rutin öppnas notebooken.</p>
+          </div>
+
+          <form class="question-form" id="questionForm">
+            <label class="input-wrap">
+              <span class="input-label">Din fråga</span>
+              <input class="question-input" id="questionInput" name="question" type="search" autocomplete="off" placeholder="Exempel: Vad gäller vid nyupptäckt diabetes?">
+            </label>
+            <button class="primary-button" type="submit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              Sök parafras
+            </button>
+          </form>
+
+          <div class="quick-prompts" aria-label="Exempelfrågor">
+            <button class="prompt-chip" type="button" data-question="Nyupptäckt diabetes">Diabetes</button>
+            <button class="prompt-chip" type="button" data-question="Astma KOL årskontroll">Astma/KOL</button>
+            <button class="prompt-chip" type="button" data-question="Triage fysioterapeut">Fysioterapi</button>
+            <button class="prompt-chip" type="button" data-question="Hemsjukvård ansvar">Hemsjukvård</button>
+          </div>
+
+          <article class="answer-card" id="answerCard" hidden aria-live="polite">
+            <div class="answer-kicker">
+              <span id="answerMode">Notebook-parafras</span>
+              <span id="confidenceLabel">Matchning</span>
+            </div>
+            <h3 id="answerTitle"></h3>
+            <p id="answerSummary"></p>
+            <ul id="answerBullets"></ul>
+            <div class="source-row">
+              <span id="answerSource"></span>
+              <a id="answerNotebookLink" href="https://notebooklm.google.com/notebook/4b4902ea-8e75-4093-a1fb-c8e92cf8fd1a?utm_source=nlmm_share" target="_blank" rel="noreferrer">Öppna Notebook</a>
+            </div>
+          </article>
+        </aside>
+      </section>
+
+      <section class="content-band" aria-labelledby="topicsTitle">
+        <div class="band-inner">
+          <div class="section-head">
+            <h2 id="topicsTitle">Områden som finns i det lokala Notebook-utdraget</h2>
+            <p>Portalen svarar bara när frågan matchar ett känt område. Det håller den smal, tydlig och mindre riskabel i ett publikt repo.</p>
+          </div>
+
+          <div class="topic-grid" id="topicGrid"></div>
+        </div>
+      </section>
+
+      <section class="notice-band" aria-labelledby="notebookTitle">
+        <div class="notice-inner">
+          <div>
+            <h2 id="notebookTitle">Notebooken är källan, men klienten är offentlig</h2>
+            <p>En publik GitHub Pages-sida kan inte säkert logga in i Google NotebookLM åt användaren. För live-svar behövs en privat serverdel som autentiserar mot NotebookLM och skickar tillbaka parafraserade svar utan att exponera källfiler eller tokens.</p>
+          </div>
+          <a class="link-button" href="https://notebooklm.google.com/notebook/4b4902ea-8e75-4093-a1fb-c8e92cf8fd1a?utm_source=nlmm_share" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3h7v7"/><path d="M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+            <span>Öppna Notebook</span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>© 2026 Stora Wäsby Vårdcentral / Praktikertjänst. Demo för QS Hub.</span>
+      <span>Bild: Stora Väsby slott, Wikimedia Commons. Inga NotebookLM-hemligheter lagras i klienten.</span>
+    </footer>
+  </div>
+
+  <script>
+    const NOTEBOOK_URL = "https://notebooklm.google.com/notebook/4b4902ea-8e75-4093-a1fb-c8e92cf8fd1a?utm_source=nlmm_share";
+
+    const topics = [
+      {
+        id: "diabetes",
+        title: "Nyupptäckt diabetes",
+        icon: "activity",
+        source: "Diabetes Ssk - nyupptäckt.26.docx",
+        keywords: ["diabetes", "blodsocker", "hba1c", "fotstatus", "ögon", "nyupptäckt"],
+        summary: "Notebook-utdraget beskriver en strukturerad sjuksköterskerutin där diagnosen förklaras, levnadsvanor gås igenom och status/prover samlas inför fortsatt läkaruppföljning.",
+        bullets: [
+          "Gå igenom diagnos, egenvård och varför uppföljning behövs.",
+          "Fokusera på levnadsvanor, mätvärden och riskbedömning utan att ersätta ansvarig behandlares beslut.",
+          "Planera fortsatt uppföljning och relevanta kontroller enligt originalrutinen i notebooken."
+        ]
+      },
+      {
+        id: "fysio",
+        title: "Triage till fysioterapeut",
+        icon: "route",
+        source: "Triagering Vem ska till fysioterapeut.docx",
+        keywords: ["fysio", "fysioterapeut", "triage", "led", "muskel", "lumbago", "nacke", "axel", "huvudvärk"],
+        summary: "Parafrasen från Notebook-utdraget säger att fysioterapeutspåret passar vid flera besvär från leder, muskler, rygg, nacke och stress-/aktivitetsrelaterade problem när patienten inte är allmänpåverkad.",
+        bullets: [
+          "Skicka inte vidare som rutin om patienten verkar sjuk eller tydligt allmänpåverkad.",
+          "Typiska matchningar är akuta eller belastningsrelaterade besvär från muskler och leder.",
+          "Vid oklarhet eller röda flaggor ska originalrutinen och medicinsk bedömning styra."
+        ]
+      },
+      {
+        id: "astma-kol",
+        title: "Astma/KOL årskontroll",
+        icon: "lungs",
+        source: "Årskontroll AstmaKOL Sköterska förberedande - kopia.docx",
+        keywords: ["astma", "kol", "spirometri", "pef", "act", "cat", "mmrc", "inhalation", "luftvägsregistret"],
+        summary: "Notebook-utdraget beskriver förberedelser inför årskontroll: rätt journalmall, samtycke när register används, relevanta mätningar och skattningar samt kontroll av inhalationsteknik.",
+        bullets: [
+          "Samla aktuella mätvärden och symtomskattningar före läkarbesöket.",
+          "Kontrollera inhalationsteknik och behov av stöd som skola eller digital uppföljning.",
+          "Använd originalkällan för exakt mall, ordningsföljd och lokala undantag."
+        ]
+      },
+      {
+        id: "hemsjukvard",
+        title: "Hemsjukvård",
+        icon: "home",
+        source: "Information HSV.docx / HSV Rutin för samverkan.26.docx",
+        keywords: ["hemsjuk", "hsv", "jour", "samverkan", "hemmet", "ansvar"],
+        summary: "Det lokala utdraget beskriver ansvarsfördelning mellan vårdcentralen och jouraktör över dygnet, med fokus på tydlig överlämning och rätt kontaktväg.",
+        bullets: [
+          "Kontrollera alltid aktuell ansvarstid och jourväg i originalkällan.",
+          "Dokumentation och samverkan behöver vara tydlig när ansvar flyttas mellan aktörer.",
+          "Personnamn och bemanningsdetaljer publiceras inte i den här öppna demoappen."
+        ]
+      },
+      {
+        id: "barn-uvi",
+        title: "Barn-UVI",
+        icon: "clipboard",
+        source: "Barn-UVI-källa i Notebook",
+        keywords: ["barn", "uvi", "urinvägsinfektion", "urinprov"],
+        summary: "Notebook-materialet nämner Barn-UVI som område, men det publika utdraget här innehåller inte tillräckligt med detaljer för ett säkert rutinsvar.",
+        bullets: [
+          "Öppna Notebooken och kontrollera originalkällan innan råd ges.",
+          "Sidan hittar ämnet men undviker att fylla i kliniska detaljer som inte finns i utdraget."
+        ]
+      },
+      {
+        id: "less",
+        title: "LESS / triagering",
+        icon: "checklist",
+        source: "LESS-/triageringskälla i Notebook",
+        keywords: ["less", "triagering", "telefon", "bedömning", "rådgivning"],
+        summary: "Notebook-materialet nämner LESS och triagering, men den här publika demoversionen saknar ett komplett utdrag från källfilen.",
+        bullets: [
+          "Använd Notebooken för den fullständiga lokala rutinen.",
+          "Vid frågor som inte matchar en inläst parafras visas ingen påhittad rutin."
+        ]
+      }
+    ];
+
+    const icons = {
+      activity: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 8L9 4l-3 8H2"/></svg>',
+      route: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M12 19h4.5a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7H12"/></svg>',
+      lungs: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v9"/><path d="M12 12c-2-3-4-5-6-5-2 0-3 2-3 5v5c0 2 1 4 3 4 3 0 5-4 6-9Z"/><path d="M12 12c2-3 4-5 6-5 2 0 3 2 3 5v5c0 2-1 4-3 4-3 0-5-4-6-9Z"/></svg>',
+      home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>',
+      clipboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>',
+      checklist: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 11 2 2 4-4"/><path d="m9 17 2 2 4-4"/><path d="M4 6h16"/></svg>'
+    };
+
+    const topicGrid = document.querySelector("#topicGrid");
+    const questionForm = document.querySelector("#questionForm");
+    const questionInput = document.querySelector("#questionInput");
+    const answerCard = document.querySelector("#answerCard");
+    const answerTitle = document.querySelector("#answerTitle");
+    const answerSummary = document.querySelector("#answerSummary");
+    const answerBullets = document.querySelector("#answerBullets");
+    const answerSource = document.querySelector("#answerSource");
+    const confidenceLabel = document.querySelector("#confidenceLabel");
+
+    function normalizeText(value) {
+      return value
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9åäö\s-]/gi, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function scoreTopic(query, topic) {
+      const normalizedQuery = normalizeText(query);
+      const haystack = normalizeText([topic.title, topic.summary, topic.keywords.join(" ")].join(" "));
+      let score = 0;
+
+      for (const word of normalizedQuery.split(" ")) {
+        if (!word || word.length < 3) continue;
+        if (haystack.includes(word)) score += topic.keywords.includes(word) ? 4 : 2;
+      }
+
+      for (const keyword of topic.keywords) {
+        if (normalizedQuery.includes(normalizeText(keyword))) score += 6;
+      }
+
+      return score;
+    }
+
+    function findBestTopic(query) {
+      return topics
+        .map((topic) => ({ topic, score: scoreTopic(query, topic) }))
+        .sort((a, b) => b.score - a.score)[0];
+    }
+
+    function renderAnswer(topic, score) {
+      answerTitle.textContent = topic.title;
+      answerSummary.textContent = topic.summary;
+      answerBullets.innerHTML = topic.bullets.map((item) => `<li>${item}</li>`).join("");
+      answerSource.textContent = `Källa: ${topic.source}`;
+      confidenceLabel.textContent = score >= 12 ? "Stark matchning" : "Möjlig matchning";
+      answerCard.hidden = false;
+    }
+
+    function renderNoAnswer(query) {
+      answerTitle.textContent = "Ingen säker träff i det publika utdraget";
+      answerSummary.textContent = `Frågan "${query}" matchar inte något område som finns inläst i den här öppna demoappen. För att undvika påhittade rutiner behöver originalkällan kontrolleras i Notebooken.`;
+      answerBullets.innerHTML = [
+        "Öppna Notebook-länken och sök i originalfilerna.",
+        "Lägg till en privat backend om sidan ska kunna fråga NotebookLM live.",
+        "Publicera inte interna rutiner eller personuppgifter direkt i ett publikt repo."
+      ].map((item) => `<li>${item}</li>`).join("");
+      answerSource.textContent = "Källa: NotebookLM-länk angiven, men inget matchande lokalt utdrag.";
+      confidenceLabel.textContent = "Ingen matchning";
+      answerCard.hidden = false;
+    }
+
+    function askQuestion(query) {
+      const cleanQuery = query.trim();
+      if (!cleanQuery) {
+        questionInput.focus();
+        return;
+      }
+
+      const match = findBestTopic(cleanQuery);
+      if (match && match.score >= 4) {
+        renderAnswer(match.topic, match.score);
+      } else {
+        renderNoAnswer(cleanQuery);
+      }
+      answerCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function renderTopics() {
+      topicGrid.innerHTML = topics.map((topic) => `
+        <article class="topic-card">
+          <span class="topic-icon" aria-hidden="true">${icons[topic.icon]}</span>
+          <h3>${topic.title}</h3>
+          <p>${topic.summary}</p>
+          <button type="button" data-question="${topic.title}">Fråga om detta</button>
+        </article>
+      `).join("");
+    }
+
+    questionForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      askQuestion(questionInput.value);
+    });
+
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-question]");
+      if (!button) return;
+      questionInput.value = button.dataset.question;
+      askQuestion(button.dataset.question);
+    });
+
+    renderTopics();
+  </script>
+</body>
+</html>
